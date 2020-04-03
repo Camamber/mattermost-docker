@@ -5,12 +5,12 @@ APP_HOST=${APP_HOST:-app}
 APP_PORT_NUMBER=${APP_PORT_NUMBER:-8000}
 
 # Check if SSL should be enabled (if certificates exists)
-if [ -f "/cert/cert.pem" -a -f "/cert/key-no-password.pem" ]; then
-  echo "found certificate and key, linking ssl config"
-  ssl="-ssl"
-else
-  echo "linking plain config"
+if [ ! -f " /cert/default.crt" ]; then
+    openssl genrsa -out "/cert/default.key" 2048
+    openssl req -new -key "/cert/default.key" -out "/cert/default.csr" -subj "/CN=default/O=default/C=UK"
+    openssl x509 -req -days 365 -in "/cert/default.csr" -signkey "/cert/default.key" -out "/cert/default.crt"
 fi
+
 # Ensure that the configuration file is not present before linking. 
 test -w /etc/nginx/conf.d/mattermost.conf && rm /etc/nginx/conf.d/mattermost.conf
 # Linking Nginx configuration file

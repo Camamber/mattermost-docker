@@ -7,12 +7,12 @@ services:
     read_only: true
     restart: unless-stopped
     volumes:
-      - ./volumes/db/var/lib/postgresql/data:/var/lib/postgresql/data
+      - ${DATA_PATH_HOST}/db/var/lib/postgresql/data:/var/lib/postgresql/data
       - /etc/localtime:/etc/localtime:ro
     environment:
-      - POSTGRES_USER=mmuser
-      - POSTGRES_PASSWORD=mmuser_password
-      - POSTGRES_DB=mattermost
+      - POSTGRES_USER=${MM_USERNAME}
+      - POSTGRES_PASSWORD=${MM_PASSWORD
+      - POSTGRES_DB=${MM_DBNAME}
     # uncomment the following to enable backup
     #  - AWS_ACCESS_KEY_ID=XXXX
     #  - AWS_SECRET_ACCESS_KEY=XXXX
@@ -23,27 +23,27 @@ services:
     build:
       context: app
       # uncomment following lines for team edition or change UID/GID
-      # args:
-      #   - edition=team
-      #   - PUID=1000
-      #   - PGID=1000
+      args:
+        # - edition=team
+        - PUID=1000
+        - PGID=1000
     restart: unless-stopped
     volumes:
-      - ./volumes/app/mattermost/config:/mattermost/config:rw
-      - ./volumes/app/mattermost/data:/mattermost/data:rw
-      - ./volumes/app/mattermost/logs:/mattermost/logs:rw
-      - ./volumes/app/mattermost/plugins:/mattermost/plugins:rw
-      - ./volumes/app/mattermost/client-plugins:/mattermost/client/plugins:rw
+      - ${DATA_PATH_HOST}/app/mattermost/config:/mattermost/config:rw
+      - ${DATA_PATH_HOST}/app/mattermost/data:/mattermost/data:rw
+      - ${DATA_PATH_HOST}/app/mattermost/logs:/mattermost/logs:rw
+      - ${DATA_PATH_HOST}/app/mattermost/plugins:/mattermost/plugins:rw
+      - ${DATA_PATH_HOST}/app/mattermost/client-plugins:/mattermost/client/plugins:rw
       - /etc/localtime:/etc/localtime:ro
     environment:
       # set same as db credentials and dbname
-      - MM_USERNAME=mmuser
-      - MM_PASSWORD=mmuser_password
-      - MM_DBNAME=mattermost
+      - MM_USERNAME=${MM_USERNAME}
+      - MM_PASSWORD=${MM_PASSWORD
+      - MM_DBNAME=${MM_DBNAME}
 
       # use the credentials you've set above, in the format:
-      # MM_SQLSETTINGS_DATASOURCE=postgres://${MM_USERNAME}:${MM_PASSWORD}@db:5432/${MM_DBNAME}?sslmode=disable&connect_timeout=10
-      - MM_SQLSETTINGS_DATASOURCE=postgres://mmuser:mmuser_password@db:5432/mattermost?sslmode=disable&connect_timeout=10
+      - MM_SQLSETTINGS_DATASOURCE=postgres://${MM_USERNAME}:${MM_PASSWORD}@db:5432/${MM_DBNAME}?sslmode=disable&connect_timeout=10
+      #- MM_SQLSETTINGS_DATASOURCE=postgres://mmuser:mmuser_password@db:5432/mattermost?sslmode=disable&connect_timeout=10
 
       # in case your config is not in default location
       #- MM_CONFIG=/mattermost/config/config.json
@@ -51,11 +51,11 @@ services:
   web:
     build: web
     ports:
-      - "80:80"
-      - "443:443"
+      - "${NGINX_HOST_HTTP_PORT}:80"
+      - "${NGINX_HOST_HTTPS_PORT}:443"
     read_only: true
     restart: unless-stopped
     volumes:
       # This directory must have cert files if you want to enable SSL
-      - ./volumes/web/cert:/cert:ro
+      - ${DATA_PATH_HOST}/web/cert:/cert:ro
       - /etc/localtime:/etc/localtime:ro
