@@ -57,5 +57,5 @@ services:
     restart: unless-stopped
     volumes:
       # This directory must have cert files if you want to enable SSL
-      - ${DATA_PATH_HOST}/web/cert:/cert:ro
+      - ${DATA_PATH_HOST}/web/cert:/cert
       - /etc/localtime:/etc/localtime:ro
