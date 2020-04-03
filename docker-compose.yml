@@ -11,7 +11,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
     environment:
       - POSTGRES_USER=${MM_USERNAME}
-      - POSTGRES_PASSWORD=${MM_PASSWORD
+      - POSTGRES_PASSWORD=${MM_PASSWORD}
       - POSTGRES_DB=${MM_DBNAME}
     # uncomment the following to enable backup
     #  - AWS_ACCESS_KEY_ID=XXXX
@@ -38,7 +38,7 @@ services:
     environment:
       # set same as db credentials and dbname
       - MM_USERNAME=${MM_USERNAME}
-      - MM_PASSWORD=${MM_PASSWORD
+      - MM_PASSWORD=${MM_PASSWORD}
       - MM_DBNAME=${MM_DBNAME}
 
       # use the credentials you've set above, in the format:
