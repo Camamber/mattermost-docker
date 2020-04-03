@@ -1,7 +1,12 @@
-FROM nginx:mainline-alpine
+FROM nginx:alpine
 
 # Remove default configuration and add our custom Nginx configuration files
 RUN rm /etc/nginx/conf.d/default.conf \
+    && apk update \
+    && apk upgrade \
+    && apk --update add logrotate \
+    && apk add --no-cache openssl \
+    && apk add --no-cache bash \
     && apk add --no-cache curl
 
 COPY ["./mattermost", "./mattermost-ssl", "/etc/nginx/sites-available/"]
